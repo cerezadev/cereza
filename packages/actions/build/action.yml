@@ -1,0 +1,12 @@
+name: "Cereza Build"
+description: "Builds a cereza project."
+inputs:
+  url:
+    description: "The url of the backend to send the build job to."
+    required: true
+  token:
+    description: "The access token of the backend to send the build job to."
+    required: true
+runs:
+  using: 'node16'
+  main: 'dist/main.js'

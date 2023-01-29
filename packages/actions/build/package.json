@@ -1,0 +1,12 @@
+{
+	"name": "build",
+	"version": "0.0.0",
+	"private": true,
+	"main": "dist/index.js",
+	"scripts": {},
+	"dependencies": {
+		"@actions/core": "^1.10.0",
+		"@actions/github": "^5.1.1",
+		"client": "*"
+	}
+}
