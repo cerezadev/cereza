@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: cereza/cereza/packages/actions/build@master
+      - uses: cerezadev/cereza/packages/actions/build@start
         with:
           url: \${{ secrets.CEREZA_BACKEND_URL }}
           token: \${{ secrets.CEREZA_BACKEND_TOKEN }}
