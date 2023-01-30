@@ -3,6 +3,8 @@ import { context } from "@actions/github";
 import { build } from "./build";
 
 const run = async () => {
+	info("Running action.");
+
 	try {
 		const url = getInput("url", { required: true });
 		const token = getInput("token", { required: true });
