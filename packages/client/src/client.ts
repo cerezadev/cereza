@@ -26,7 +26,12 @@ export class CerezaClient {
 		} = CerezaClientOptionsSchema.parse(_options);
 
 		this.trpc = createTRPCProxyClient<BackendRouter>({
-			links: [httpBatchLink({ url, fetch: nodeFetch as typeof fetch })],
+			links: [
+				httpBatchLink({
+					url,
+					fetch: nodeFetch as unknown as typeof fetch,
+				}),
+			],
 		});
 	}
 

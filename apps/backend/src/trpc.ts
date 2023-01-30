@@ -10,6 +10,6 @@ export const { router, mergeRouters, procedure, middleware } = initTRPC.create({
 			};
 		}
 
-		return data;
+		return { ...data.shape };
 	},
 });

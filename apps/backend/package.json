@@ -5,11 +5,15 @@
 	"main": "src/index.ts",
 	"typings": "src/index.ts",
 	"scripts": {
-		"dev": "tsx watch src/server.ts"
+		"tunnel": "npx localtunnel --p 16231 --subdomain 2fa25e5b-3131-45ce-a25e-fb1162491b0a",
+		"watch": "tsx watch src/server.ts",
+		"dev": "run-p tunnel watch"
 	},
 	"devDependencies": {
 		"@trpc/server": "^10.9.0",
 		"core": "*",
+		"localtunnel": "^2.0.2",
+		"npm-run-all": "^4.1.5",
 		"prisma": "^4.9.0",
 		"tsx": "^3.12.2"
 	},

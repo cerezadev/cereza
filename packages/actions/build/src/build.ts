@@ -11,6 +11,6 @@ export const build = async (url: string, providerId: number, token: string) => {
 	);
 
 	if (!build.success) {
-		throw new Error(build.error.message);
+		throw build.error;
 	}
 };

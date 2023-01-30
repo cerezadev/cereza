@@ -1,4 +1,4 @@
-import { getInput, setFailed, info } from "@actions/core";
+import { getInput, setFailed, info, error } from "@actions/core";
 import { context } from "@actions/github";
 import { build } from "./build";
 
@@ -19,8 +19,11 @@ const run = async () => {
 			typeof _providerId === "number" ? _providerId : Number(_providerId);
 
 		await build(url, providerId, token);
-	} catch (error) {
-		if (error instanceof Error) setFailed(error.message);
+	} catch (err) {
+		if (err instanceof Error) {
+			error(err);
+			setFailed(err.message);
+		}
 	}
 };
 
