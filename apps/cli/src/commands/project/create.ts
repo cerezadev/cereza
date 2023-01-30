@@ -7,6 +7,14 @@ import GithubCommand from "../../base/GithubCommand";
 import { selectBackend } from "../../utils/backend";
 import { mkdir, writeFile } from "fs/promises";
 import { join } from "path";
+import {
+	ready,
+	from_base64,
+	from_string,
+	base64_variants,
+	crypto_box_seal,
+	to_base64,
+} from "libsodium-wrappers";
 
 const CEREZA_BUILD_CONFIG = `
 
@@ -34,6 +42,26 @@ export default class CreateProject extends GithubCommand {
 		const backend = await selectBackend(this.appConfig);
 		const repository = await this.selectRepository();
 
+		const project = await this.createProject(
+			backend,
+			projectName,
+			repository
+		);
+
+		await this.addSecrets(
+			backend.url,
+			project.connection.token,
+			repository
+		);
+
+		await this.generateFiles();
+	}
+
+	async createProject(
+		backend: { name: string; url: string },
+		projectName: string,
+		repository: { id: number }
+	) {
 		const cereza = new CerezaClient({ backend });
 
 		ux.action.start("Creating project");
@@ -51,10 +79,52 @@ export default class CreateProject extends GithubCommand {
 
 		ux.action.stop();
 
+		return creation.data;
+	}
+
+	async addSecrets(
+		backendUrl: string,
+		accessToken: string,
+		repository: {
+			owner: { login: string };
+			name: string;
+		}
+	) {
+		ux.action.start("Adding secrets to repository");
+
+		const {
+			data: { key_id, key },
+		} = await this.octokit.rest.actions.getRepoPublicKey({
+			owner: repository.owner.login,
+			repo: repository.name,
+		});
+
+		await this.octokit.rest.actions.createOrUpdateRepoSecret({
+			owner: repository.owner.login,
+			repo: repository.name,
+			secret_name: "CEREZA_BACKEND_URL",
+			encrypted_value: await encrypt(backendUrl, key),
+			key_id,
+		});
+
+		await this.octokit.rest.actions.createOrUpdateRepoSecret({
+			owner: repository.owner.login,
+			repo: repository.name,
+			secret_name: "CEREZA_BACKEND_TOKEN",
+			encrypted_value: await encrypt(accessToken, key),
+			key_id,
+		});
+
+		ux.action.stop();
+	}
+
+	async generateFiles() {
 		ux.action.start("Generating configuration files");
 
-		await mkdir(".github");
-		await writeFile(join(".github", "cereza.yml"), CEREZA_BUILD_CONFIG);
+		const workFlowsPath = join(".github", "workflows");
+
+		await mkdir(workFlowsPath, { recursive: true });
+		await writeFile(join(workFlowsPath, "cereza.yml"), CEREZA_BUILD_CONFIG);
 
 		ux.action.stop();
 	}
@@ -107,3 +177,14 @@ export default class CreateProject extends GithubCommand {
 			.then(({ data: { repositories } }) => repositories);
 	}
 }
+
+const encrypt = async (value: string, key: string) => {
+	await ready;
+
+	const keyBytes = from_base64(key, base64_variants.ORIGINAL);
+	const secretBytes = from_string(value);
+	const encryptedBytes = crypto_box_seal(secretBytes, keyBytes);
+	const encryptedStr = to_base64(encryptedBytes, base64_variants.ORIGINAL);
+
+	return encryptedStr;
+};

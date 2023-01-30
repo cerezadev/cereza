@@ -22,12 +22,14 @@
 		"@octokit/auth-oauth-device": "^4.0.4",
 		"axios": "^1.2.6",
 		"enquirer": "^2.3.6",
+		"libsodium-wrappers": "^0.7.10",
 		"octokit": "^2.0.14",
 		"zod": "^3.20.2"
 	},
 	"devDependencies": {
 		"@oclif/test": "^2.3.3",
 		"@types/chai": "^4",
+		"@types/libsodium-wrappers": "^0.7.10",
 		"@types/mocha": "^9.0.0",
 		"chai": "^4",
 		"client": "*",
