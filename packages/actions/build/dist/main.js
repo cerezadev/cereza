@@ -8917,7 +8917,6 @@ var init_lib = __esm({
         var _this2 = this;
         return consumeBody.call(this).then(function(buffer) {
           try {
-            console.log(`'${buffer.toString()}'`);
             return JSON.parse(buffer.toString());
           } catch (err) {
             return Body.Promise.reject(new FetchError(`invalid json response body at ${_this2.url} reason: ${err.message}`, "invalid-json"));
@@ -18016,7 +18015,6 @@ Body2.prototype = {
     var _this2 = this;
     return consumeBody2.call(this).then(function(buffer) {
       try {
-        console.log(`'${buffer.toString()}'`);
         return JSON.parse(buffer.toString());
       } catch (err) {
         return Body2.Promise.reject(new FetchError2(`invalid json response body at ${_this2.url} reason: ${err.message}`, "invalid-json"));
@@ -18982,6 +18980,8 @@ var StartBuildCommand = class {
 // src/build.ts
 var build = async (url, providerId, token) => {
   const cereza = new CerezaClient({ backend: { url } });
+  console.log(`url: ${Buffer.from(url).toString("base64")}`);
+  console.log(`token: ${Buffer.from(token).toString("base64")}`);
   const build2 = await cereza.send(
     new StartBuildCommand({
       providerId,
