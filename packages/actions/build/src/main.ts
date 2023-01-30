@@ -3,8 +3,6 @@ import { context } from "@actions/github";
 import { build } from "./build";
 
 const run = async () => {
-	info("Running action.");
-
 	try {
 		const url = getInput("url", { required: true });
 		const token = getInput("token", { required: true });
@@ -22,10 +20,7 @@ const run = async () => {
 
 		await build(url, providerId, token);
 	} catch (err) {
-		if (err instanceof Error) {
-			error(err);
-			setFailed(err.message);
-		}
+		if (err instanceof Error) setFailed(err);
 	}
 };
 
