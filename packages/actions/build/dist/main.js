@@ -18980,8 +18980,6 @@ var StartBuildCommand = class {
 // src/build.ts
 var build = async (url, providerId, token) => {
   const cereza = new CerezaClient({ backend: { url } });
-  console.log(`url: ${Buffer.from(url).toString("base64")}`);
-  console.log(`token: ${Buffer.from(token).toString("base64")}`);
   const build2 = await cereza.send(
     new StartBuildCommand({
       providerId,
